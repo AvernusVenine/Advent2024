@@ -19,6 +19,7 @@ void load_locations(struct List** list_one, struct List** list_two);
 void load_map(struct Map** map_one, struct Map** map_two);
 struct List* append_list(struct List* list, int val);
 struct Map* append_map(struct Map* map, int val);
+int get_map_count(struct Map* map, int val);
 
 int main(){
 
