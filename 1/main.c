@@ -15,7 +15,7 @@ typedef struct Map{
     struct Map *next;
 } Map;
 
-void load_locations(struct List** list_one, struct List** list_two);
+void load_list(struct List** list_one, struct List** list_two);
 void load_map(struct Map** map_one, struct Map** map_two);
 struct List* append_list(struct List* list, int val);
 struct Map* append_map(struct Map* map, int val);
@@ -26,7 +26,7 @@ int main(){
     struct List *list_one = NULL;
     struct List *list_two = NULL;
 
-    load_locations(&list_one, &list_two);
+    load_list(&list_one, &list_two);
 
     long total_diff = 0;
 
@@ -115,7 +115,7 @@ int get_map_count(struct Map* map, int val){
     }
 }
 
-void load_locations(struct List** list_one, struct List** list_two){
+void load_list(struct List** list_one, struct List** list_two){
     FILE *file;
     file = fopen(PATH, "r");
 
