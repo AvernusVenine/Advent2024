@@ -9,16 +9,16 @@ typedef struct List{
     struct List *next;
 } List;
 
-typedef struct HashMap{
+typedef struct Map{
     int val;
     int count;
-    struct HashMap *next;
-} HashMap;
+    struct Map *next;
+} Map;
 
 void load_locations(struct List** list_one, struct List** list_two);
-void load_hashmap(struct HashMap** map_one, struct HashMap** map_two);
+void load_map(struct Map** map_one, struct Map** map_two);
 struct List* append_list(struct List* list, int val);
-void append_map(struct HashMap* map, int val);
+struct Map* append_map(struct Map* map, int val);
 
 int main(){
 
@@ -39,11 +39,27 @@ int main(){
 
     printf("Total difference is %d\n", total_diff);
 
-    struct HashMap *map_one = NULL;
-    struct HashMap *map_two = NULL;
+    struct Map *map_one = NULL;
+    struct Map *map_two = NULL;
+
+    load_map(&map_one, &map_two);
+
+    long total_score = 0;
+
+    while(map_one != NULL){
+
+        int map_two_count = get_map_count(map_two, map_one->val);
+        int score = map_one->val * map_one->count * map_two_count;
+
+        map_one = map_one->next;
+
+        total_score += score;
+    }       
+
+    printf("Similarity score is %d\n", total_score);
 }
 
-void load_hashmap(struct HashMap** map_one, struct HashMap** map_two){
+void load_map(struct Map** map_one, struct Map** map_two){
     FILE *file;
     file = fopen(PATH, "r");
 
@@ -55,12 +71,47 @@ void load_hashmap(struct HashMap** map_one, struct HashMap** map_two){
     char buffer[256];
 
     while(fgets(buffer, sizeof(buffer), file)){
+        char* token = strtok(buffer, " ");
+        int val = atoi(token);
+        *map_one = append_map(*map_one, val);
 
+        token = strtok(NULL, " ");
+        int size = strlen(token);
+        token[size] = '\0';
+        val = atoi(token);
+        *map_two = append_map(*map_two, val);
     }
 }
 
-void append_map(struct HashMap* map, int val){
-    
+struct Map* append_map(struct Map* map, int val){
+    struct Map* curr = map;
+
+    while(curr != NULL){
+        if(curr->val == val){
+            curr->count++;
+            return map;
+        }
+        curr = curr->next;
+    }
+
+    struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+
+    ptr->val = val;
+    ptr->count = 1;
+    ptr->next = map;
+
+    return ptr;
+}
+
+int get_map_count(struct Map* map, int val){
+    while(map != NULL){
+
+        if(map->val == val){
+            return map->count;
+        }
+
+        map = map->next;
+    }
 }
 
 void load_locations(struct List** list_one, struct List** list_two){
