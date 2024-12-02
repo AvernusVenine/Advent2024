@@ -99,65 +99,32 @@ int part_two(){
             token = strtok(NULL, " ");
         }
 
-        int valid = 1;
-        int sign = 0;
-        
-        int i = 0;
-        while(i + 1 < count){
-            int diff = report[i] - report[i+1];
+        for(int i = 0; i < count; i++){
+            int omit[count-1];
 
-            if(abs(diff) > 3 || abs(diff) < 1){
-                valid = 0;
-                break;
-            }
-
-            if(sign == 0 && diff != 0){
-                sign = abs(diff) / diff;
-            }
-
-            if((diff < 0 && sign > 0) || (diff > 0 && sign < 0)){
-                valid = 0;
-                break;
-            }
-
-            i++;
-        }
-
-        if(valid){
-            safe++;
-            continue;
-        }
-
-        valid = 1;
-        sign = 0;
-
-        i = 0;
-        int j = 0;
-        while(j + 1 < count){
-
-            while(i + 1 < count){
-
-                if(j == 0 && i == 0){
-                    i++;
+            for(int j = 0; j < count; j++){
+                
+                if(j < i){
+                    omit[j] = report[j];
                 }
-                else if (j + 1 == count && i + 1 == count){
-                    break;
+                else if(j > i){
+                    omit[j-1] = report[j];
                 }
 
-                int prev = report[i];
+            }
 
-                if(i + 1 == j){
-                    i++;
-                }
+            int valid = 1;
+            int sign = 0;
 
-                int diff = prev - report[i+1];
+            for(int j = 0; j < count-2; j++){
+                int diff = omit[j] - omit[j+1];
 
                 if(abs(diff) > 3 || abs(diff) < 1){
                     valid = 0;
                     break;
                 }
 
-                if(sign == 0 && diff != 0){
+                if(sign == 0){
                     sign = abs(diff) / diff;
                 }
 
@@ -165,20 +132,13 @@ int part_two(){
                     valid = 0;
                     break;
                 }
-
-                i++;
             }
 
             if(valid){
+                safe++;
                 break;
             }
-            j++;
         }
-
-        if(valid){
-            safe++;
-        }
-
     }
 
     return safe;
