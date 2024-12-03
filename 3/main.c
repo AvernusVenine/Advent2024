@@ -130,11 +130,6 @@ int check_command(char *buffer, int i){
                 int y = atoi(y_buff);
                 int x = atoi(x_buff);
 
-                if(x == 662 || x == 878){
-                    printf("%d * %d\n", x, y);
-                }
-
-                //printf("%d * %d\n", x, y);
                 return x * y;
             }
         }
