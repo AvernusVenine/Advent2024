@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-const char *PATH = "test.txt";
+const char *PATH = "xmas.txt";
 const char *PATTERN = "XMAS";
 const int SIZE = 2048;
 const int PATTERN_SIZE = 4;
@@ -28,8 +28,12 @@ int part_one(){
         puzzle[a] = (char *) malloc(SIZE * sizeof(char));
     }
 
+    char *buffer = (char *) malloc(1024 * sizeof(char *));
+
     int i = 0;
-    while(fgets(puzzle[i], SIZE, file)){
+    while(fgets(buffer, 1024, file) && i < SIZE){
+
+        strncpy(puzzle[i], buffer, SIZE);
         i++;
     }
 
@@ -38,11 +42,9 @@ int part_one(){
     for(int x = 0; x < SIZE; x++){
 
         for(int y = 0; y < SIZE; y++){
-            int precount = count;
-
-            //count += check_verticals(puzzle, x, y);
+            count += check_verticals(puzzle, x, y);
             count += check_horizontals(puzzle, x, y);
-            //count += check_diagonals(puzzle, x, y);
+            count += check_diagonals(puzzle, x, y);
         }
     }
     
@@ -124,10 +126,6 @@ int check_horizontals(char **puzzle, int x, int y){
     //Check forwards
     int i = 0;
 
-    if(puzzle[x][y] == '\0'){
-        return 0;
-    }
-
     for(int a = y; a < SIZE; a++){
         if(i == PATTERN_SIZE){
             count++;
@@ -146,7 +144,7 @@ int check_horizontals(char **puzzle, int x, int y){
     i = 0;
 
     for(int a = y; a > -1; a--){
-        if(puzzle[a][y] == PATTERN[i]){
+        if(puzzle[x][a] == PATTERN[i]){
             i++;
             if(i == PATTERN_SIZE){
                 count++;
