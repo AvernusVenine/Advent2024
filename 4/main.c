@@ -9,13 +9,17 @@ const int SIZE = 2048;
 const int PATTERN_SIZE = 4;
 
 int part_one();
+int part_two();
 int check_verticals(char **puzzle, int x, int y);
 int check_horizontals(char **puzzle, int x, int y);
 int check_diagonals(char **puzzle, int x, int y);
+int check_cross(char **puzzle, int x, int y);
 
 int main(){
     int total = part_one();
     printf("There are a total of %d XMAS's\n", total);
+    total = part_two();
+    printf("There are a total of %d X-Mas's\n", total);
 }
 
 int part_one(){
@@ -52,10 +56,83 @@ int part_one(){
     return count;
 }
 
-int check_diagonals(char **puzzle, int x, int y){
+int part_two(){
+    FILE *file;
+    file = fopen(PATH, "r");
+
+    char **puzzle = (char **) malloc(SIZE * sizeof(char *));
+
+    for(int a = 0; a < SIZE; a++){
+        puzzle[a] = (char *) malloc(SIZE * sizeof(char));
+    }
+
+    char *buffer = (char *) malloc(1024 * sizeof(char *));
+
+    int i = 0;
+    while(fgets(buffer, 1024, file) && i < SIZE){
+
+        strncpy(puzzle[i], buffer, SIZE);
+        i++;
+    }
+
     int count = 0;
 
-    char buffer[4];
+    for(int x = 0; x < SIZE; x++){
+
+        for(int y = 0; y < SIZE; y++){
+            count += check_cross(puzzle, x, y);
+        }
+    }
+
+    return count;
+}
+
+int check_cross(char **puzzle, int x, int y){
+    if(puzzle[x][y] != 'A'){
+        return 0;
+    }
+
+    int count = 0;
+
+    if(x - 1 < 0 || y - 1 < 0){
+        return 0;
+    }
+
+    if(x + 1 > SIZE || y + 1 > SIZE){
+        return 0;
+    }
+
+    if(puzzle[x-1][y-1] == 'M'){
+        if(puzzle[x+1][y+1] == 'S'){
+            count++;
+        }
+    }
+    else if(puzzle[x-1][y-1] == 'S'){
+        if(puzzle[x+1][y+1] == 'M'){
+            count++;
+        }
+    }
+
+    if(puzzle[x-1][y+1] == 'M'){
+        if(puzzle[x+1][y-1] == 'S'){
+            count++;
+        }
+    }
+    else if(puzzle[x-1][y+1] == 'S'){
+        if(puzzle[x+1][y-1] == 'M'){
+            count++;
+        }
+    }
+    
+    if(count == 2){
+        return 1;
+    }
+
+    return 0;
+}
+
+int check_diagonals(char **puzzle, int x, int y){
+    int count = 0;
 
     if(puzzle[x][y] == '\0'){
         return 0;
